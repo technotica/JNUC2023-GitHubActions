@@ -1,0 +1,83 @@
+name: Autopkg Run - Example
+
+on:
+  watch:
+    types: [started]
+  schedule:
+    - cron: 0 04 * * 2,4
+  workflow_dispatch: # manually triggered
+    inputs:
+      recipe:
+        description: Optional recipe to run (e.g. Firefox.munki)
+        required: false
+      debug:
+        description: Enable debug
+        required: true
+        default: 'True'
+        type: choice
+        options:
+        - 'False'
+        - 'True'
+
+jobs:
+  AutoPkg:
+    runs-on: macos-latest
+    timeout-minutes: 90 # Keeps your builds from running too long
+    env:
+      AUTOPKG_SHA256: "2ff34daf02256ad81e2c74c83a9f4c312fa2f9dd212aba59e0cef0e6ba1be5c9"
+      AUTOPKG_URL: "https://github.com/autopkg/autopkg/releases/download/v2.7.2/autopkg-2.7.2.pkg"
+    steps:
+    - name: Checkout AutoPkg recipes
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 #v3.5.3 # Pin SHA1 hash instead of version
+      with:
+        fetch-depth: 1
+
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install -r requirements.txt
+        
+    - name: Install AutoPkg
+      run: |
+        curl -L ${{ env.AUTOPKG_URL }} --output /tmp/autopkg.pkg
+        echo "${{ env.AUTOPKG_SHA256 }} */tmp/autopkg.pkg" | shasum -c
+        if [[ $? != "0" ]]; then exit 1; fi
+        sudo installer -pkg /tmp/autopkg.pkg -target /
+
+    - name: Configure AutoPkg and Git
+      run: |
+        defaults write com.github.autopkg RECIPE_OVERRIDE_DIRS "$(pwd)"/overrides/
+        defaults write com.github.autopkg RECIPE_REPO_DIR "$(pwd)"/repos/
+        defaults write com.github.autopkg FAIL_RECIPES_WITHOUT_TRUST_INFO -bool YES
+        defaults write com.github.autopkg GITHUB_TOKEN "${{ secrets.GITHUB_TOKEN }}"  
+        defaults write com.github.autopkg TEAMS_URL "${{ secrets.JAMF_JSS_PROD_TEAMS_URL }}"
+        defaults write com.github.autopkg SLACK_URL "${{ secrets.JAMF_JSS_PROD_SLACK_URL }}"
+        defaults write com.github.autopkg JSS_URL "${{ secrets.JAMF_JSS_PROD_URL }}"
+        defaults write com.github.autopkg API_USERNAME "${{ secrets.JAMF_JSS_PROD_API_USERNAME }}"
+        defaults write com.github.autopkg API_PASSWORD "${{ secrets.JAMF_JSS_PROD_API_PASS }}"
+        defaults write com.github.autopkg jcds_mode "true"
+                
+        git config --global user.name "runner"
+        git config --global user.email "runner@githubactions.local"
+
+    - name: Configure SSH for ITS Jamf recipe repo
+      run: |      
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.JAMF_AUTOPKG_RECIPES_KEY }}" > ~/.ssh/id_ed25519
+        sudo chmod 600 ~/.ssh/id_ed25519
+        
+    - name: Add AutoPkg repos
+      run: |
+        for repo in $(cat repo_list.txt); do autopkg repo-add "$repo"; done
+
+    - name: Run AutoPkg
+      run: |
+        python3 autopkg_tools.py -l recipe_list.json
+        if [ -f pull_request_title ]; then
+        echo "TITLE=$(cat pull_request_title)" >> $GITHUB_ENV
+        echo "BODY<<EOF" >> $GITHUB_ENV
+        cat pull_request_body >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+        fi
+      env:
+        RECIPE: ${{ github.event.inputs.recipe }}
