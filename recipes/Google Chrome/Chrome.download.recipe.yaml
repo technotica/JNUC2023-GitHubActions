@@ -1,0 +1,40 @@
+Description: Downloads the current Google Chrome application 
+Identifier: com.github.isuits.download.Chrome
+MinimumVersion: "2.3"
+
+Input:
+  NAME: Google Chrome
+
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: https://dl.google.com/chrome/mac/stable/accept_tos%3Dhttps%253A%252F%252Fwww.google.com%252Fintl%252Fen_ph%252Fchrome%252Fterms%252F%26_and_accept_tos%3Dhttps%253A%252F%252Fpolicies.google.com%252Fterms/googlechrome.pkg
+      filename: "%NAME%.pkg"
+
+  - Processor: FlatPkgUnpacker
+    Arguments:
+      flat_pkg_path: "%pathname%"
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+  
+  - Processor: PkgPayloadUnpacker
+    Arguments:
+      pkg_payload_path: "%RECIPE_CACHE_DIR%/unpack/GoogleChrome.pkg/Payload"
+      destination_path: "%RECIPE_CACHE_DIR%/unpack"
+
+  - Processor: PlistReader
+    Arguments:
+      info_path: "%RECIPE_CACHE_DIR%/unpack/Google Chrome.app"
+
+  - Processor: PathDeleter
+    Arguments:
+      path_list: "%RECIPE_CACHE_DIR%/unpack"
+
+  - Processor: EndOfCheckPhase
+
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%pathname%"
+      expected_authority_names:
+        - "Developer ID Installer: Google LLC (EQHXZ8M8AV)"
+        - "Developer ID Certification Authority"
+        - "Apple Root CA"

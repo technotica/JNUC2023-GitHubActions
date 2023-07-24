@@ -1,0 +1,14 @@
+Description: Downloads the latest version of Google Chrome and creates a package
+Identifier: com.github.isuits.pkg.Chrome
+ParentRecipe: com.github.isuits.download.Chrome
+MinimumVersion: "2.3"
+
+Input:
+  NAME: Google Chrome
+  PKG_NAME_PREFIX: isu
+
+Process:
+  - Processor: PkgCopier
+    Arguments:
+      source_pkg: "%pathname%"
+      pkg_path: "%RECIPE_CACHE_DIR%/%PKG_NAME_PREFIX%-%NAME%-%version%.pkg"
