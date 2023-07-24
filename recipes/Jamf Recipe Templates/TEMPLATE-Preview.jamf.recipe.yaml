@@ -1,0 +1,133 @@
+Description: |
+  Downloads the latest version of APPLICATION and creates a package
+  Then uploads the package to Jamf Pro server
+  Creates or updates a Self Service policy that is limited to an AD group (requiring Okta sign in)
+  Creates or updates a policy using a custom trigger
+  Both policies are scoped to all computers
+Identifier: com.github.isuits.jamf.APPLICATION
+ParentRecipe: com.github.isuits.pkg.APPLICATION
+MinimumVersion: "2.3"
+
+Steps:
+1. Change Identifier
+2. Change ParentRecipe
+3. Set NAME (line 23)
+4. SET SHORT_NAME (line 24), for applications with spaces such as Microsoft Office 365, would be MicrosoftOffice365
+5. Set Category (line 25)
+6. Set OS Requirements (line 28)
+7. Set Policy Dock Item settings (alternatively delete lines 35 and 36, and 79 to 84 if not updating Dock Items)
+8. Ensure that a Self Service icon is in the Application's folder, e.g. AppName.png (line 51)
+9. Delete Lines 11 - 21
+
+Input:
+  NAME: ""
+  SHORT_NAME: "%NAME%"
+  CATEGORY: ""
+  #PACKAGE_INFO: ""
+  PACKAGE_NOTES: "Generated and added via AutoPkg Jamf Uploader process"
+  PACKAGE_OS_REQUIREMENTS: "13.x,12.x,11.x,10.15.x"
+  PACKAGE_REPLACE: "False"
+
+  # Policy Dock Item
+  DOCK_ITEM_NAME: "%NAME%"
+  DOCK_ITEM_ACTION: "Add to End"
+  DOCK_ITEM_TYPE: "App"
+  DOCK_ITEM_PATH: "file:///Applications/Appname%20Sample.app/"
+  DOCK_ITEM_REPLACE: "true"
+ 
+   # Self Service Policy Settings
+  SELF_SERVICE_POLICY_TEMPLATE: "Policy_SelfService_Preview_LimitedUsers.xml"
+  SELF_SERVICE_POLICY_NAME: "[Full JSS] %NAME% Preview"
+  SELF_SERVICE_POLICY_FREQUENCY: "Ongoing"
+  SELF_SERVICE_POLICY_REPLACE: "true"
+
+  # Self Service Feature and Categories
+  SELF_SERVICE_POLICY_CATEGORY: "ISU-Global"
+  SELF_SERVICE_FEATURE_MAIN_PAGE: "false"
+  SELF_SERVICE_POLICY_CATEGORY_1: "%CATEGORY%"
+  SELF_SERVICE_POLICY_CATEGORY_FEATURE_1: "false"
+
+  # Self Service Policy information
+  SELF_SERVICE_DISPLAY_NAME: "%NAME% %version%"
+  SELF_SERVICE_PACKAGE_SIZE: "" #In MB or GB, e.g. 42 MB
+  SELF_SERVICE_DESCRIPTION: |
+    Download Size: %SELF_SERVICE_PACKAGE_SIZE%
+    Version: %version%
+    
+    This Self Service policy is provided by Institution. 
+
+    The latest version of **%NAME%** will be installed. An icon will be placed in your Dock. %NAME% will automatically update itself using the vendor's built-in mechanism.
+
+    If you have an older version already installed, please completely quit %NAME% by using **%NAME%>Quit** or (**⌘-Q**) before proceeding.
+    
+    Please contact your **local IT group** with any questions.
+    
+  SELF_SERVICE_ICON: "%NAME%.png"
+  SELF_SERVICE_BUTTON_UNINSTALL: "Install"
+  SELF_SERVICE_BUTTON_REINSTALL: "Reinstall"
+ 
+ # Self Service User Interaction
+  SELF_SERVICE_USER_INTERACTION_START: "Starting %NAME% installation policy."
+  SELF_SERVICE_USER_INTERACTION_FINISH: "%NAME% installation policy completed."
+
+  # Custom Trigger Policy Information
+  POLICY_CATEGORY: "ISU-Global"
+  POLICY_TEMPLATE: "Policy_CustomTrigger_Global_NoDock.xml"
+  POLICY_NAME: "[Full JSS] %NAME% Custom Trigger"
+  POLICY_FREQUENCY: "Ongoing"
+  POLICY_CUSTOM_TRIGGER_NAME: "ISU%SHORT_NAME%"
+  POLICY_REPLACE: "true"
+    
+  # Set stop criteria
+  UPDATE_PREDICATE: "pkg_uploaded != True"
+ 
+Process:
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfCategoryUploader
+    Arguments:
+      category_name: "%CATEGORY%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfPackageUploader
+    Arguments:
+      pkg_category: "%CATEGORY%"
+      os_requirements: "%PACKAGE_OS_REQUIREMENTS%"
+      pkg_info: "%NAME% %version%"
+      pkg_notes: "%PACKAGE_NOTES%"
+      replace_pkg: "%PACKAGE_REPLACE%"
+
+  - Processor: StopProcessingIf
+    Arguments:
+      predicate: "%UPDATE_PREDICATE%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfDockItemUploader
+    Arguments:
+      dock_item_name: "%DOCK_ITEM_NAME%"
+      dock_item_type: "%DOCK_ITEM_TYPE%"
+      dock_item_path: "%DOCK_ITEM_PATH%"
+      replace_dock_item: "%DOCK_ITEM_REPLACE%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfPolicyUploader
+    Arguments:
+      policy_template: "%SELF_SERVICE_POLICY_TEMPLATE%"
+      policy_name: "%SELF_SERVICE_POLICY_NAME%"
+      replace_policy: "%SELF_SERVICE_POLICY_REPLACE%"
+      frequency: "%SELF_SERVICE_POLICY_FREQUENCY%"
+      icon: "%SELF_SERVICE_ICON%"
+      policy_category: "%SELF_SERVICE_POLICY_CATEGORY%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfPolicyUploader
+    Arguments:
+      policy_template: "%POLICY_TEMPLATE%"
+      policy_name: "%POLICY_NAME%"
+      replace_policy: "%POLICY_REPLACE%"
+      frequency: "%POLICY_FREQUENCY%"
+      policy_category: "%POLICY_CATEGORY%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfUploaderTeamsNotifier
+    Arguments:
+      teams_webhook_url: "%TEAMS_URL%"
+      PKG_CATEGORY: "%CATEGORY%"
+
+  - Processor: com.github.grahampugh.jamf-upload.processors/JamfUploaderSlacker
+    Arguments:
+      slack_webhook_url: "%SLACK_URL%"
+      PKG_CATEGORY: "%CATEGORY%"
