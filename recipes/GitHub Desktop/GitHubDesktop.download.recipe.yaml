@@ -1,0 +1,48 @@
+Description: Downloads the current GitHub Desktop application for Intel and Apple Silicon
+Identifier: com.github.isuits.download.GitHubDesktop
+MinimumVersion: "2.3"
+
+Input:
+  NAME: GitHub Desktop
+  BUILD_INTEL: darwin
+  BUILD_ARM64: darwin-arm64
+
+Process:
+  - Processor: URLDownloader
+    Arguments:
+      url: https://central.github.com/deployments/desktop/desktop/latest/%BUILD_INTEL%
+      filename: "GitHubDesktop-%BUILD_INTEL%.zip"
+  
+  - Processor: Unarchiver
+    Arguments:
+      archive_path: "%pathname%"
+      destination_path: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%/Applications"
+      purge_destination: "true"
+
+  - Processor: URLDownloader
+    Arguments:
+      url: https://central.github.com/deployments/desktop/desktop/latest/%BUILD_ARM64%
+      filename: "GitHubDesktop-%BUILD_ARM64%.zip"
+
+  - Processor: Unarchiver
+    Arguments:
+      archive_path: "%pathname%"
+      destination_path: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_ARM64%/Applications"
+      purge_destination: "true"
+  
+  - Processor: Versioner
+    Arguments:
+      input_plist_path: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%/Applications/GitHub Desktop.app/Contents/Info.plist"
+
+  - Processor: EndOfCheckPhase
+
+  - Processor: CodeSignatureVerifier
+    Arguments:
+      input_path: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%/Applications/GitHub Desktop.app"
+      requirement: (identifier "com.github.GitHub" or identifier "com.github.GHAskPass") and anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VEKTX9H2N7
+
+  - Processor: CodeSignatureVerifier  
+    Arguments:
+      input_path: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_ARM64%/Applications/GitHub Desktop.app"
+      requirement: (identifier "com.github.GitHub" or identifier "com.github.GHAskPass") and anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.9] /* exists */ or anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = VEKTX9H2N7
+      

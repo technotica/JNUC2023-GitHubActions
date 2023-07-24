@@ -1,0 +1,106 @@
+Description: Downloads the latest version of GitHub Desktop and creates universal package with script that installs either Apple Silicon or the Intel app
+Identifier: com.github.isuits.pkg.GitHubDesktop
+ParentRecipe: com.github.isuits.download.GitHubDesktop
+MinimumVersion: "2.3.0"
+
+Input:
+  NAME: GitHub Desktop
+  PKG_NAME_PREFIX: isu
+
+Process:
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/Universal/Scripts/"
+      pkgdirs: {}
+  
+  - Processor: PkgRootCreator
+    Arguments:
+      pkgroot: "%RECIPE_CACHE_DIR%/Universal/pkgroot"
+      pkgdirs: {}
+
+  - Processor: PkgCreator
+    Arguments:
+      force_pkg_build: "true"
+      pkg_request: 
+        pkgdir: "%RECIPE_CACHE_DIR%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%"
+        scripts: "scripts"
+        version: "%version%"
+        id: com.github.GitHub
+        options: purge_ds_store
+        chown:
+          - path: Applications
+            user: root
+            group: admin
+        pkgname: "%NAME%-%BUILD_INTEL%-%version%"
+
+  - Processor: PkgCreator
+    Arguments:
+      force_pkg_build: "true"
+      pkg_request: 
+        pkgdir: "%RECIPE_CACHE_DIR%"
+        pkgroot: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_ARM64%"
+        scripts: "scripts"
+        version: "%version%"
+        id: com.github.GitHub
+        options: purge_ds_store
+        chown:
+          - path: Applications
+            user: root
+            group: admin
+        pkgname: "%NAME%-%BUILD_ARM64%-%version%"
+
+  - Processor: FileMover
+    Arguments:  
+      source: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%-%version%.pkg"
+      target: "%RECIPE_CACHE_DIR%/Universal/Scripts/%NAME%-%BUILD_INTEL%-%version%.pkg"
+      overwrite: "false"
+
+  - Processor: FileMover
+    Arguments:  
+      source: "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_ARM64%-%version%.pkg"
+      target: "%RECIPE_CACHE_DIR%/Universal/Scripts/%NAME%-%BUILD_ARM64%-%version%.pkg"
+      overwrite: "false"
+
+  - Processor: FileCreator
+    Arguments:  
+      file_path: "%RECIPE_CACHE_DIR%/Universal/Scripts/preinstall"
+      file_mode: "0755"
+      file_content: |
+        #!/bin/bash
+        # Determine working directory
+        installDir=$(dirname $0)
+
+        # Identify installer package names
+        Intel_package="%NAME%-%BUILD_INTEL%-%version%.pkg"
+        Apple_Silicon_package="%NAME%-%BUILD_ARM64%-%version%.pkg"
+
+        # Determine if this Mac has an Intel or Apple Silicon processor
+        processor=$(/usr/sbin/sysctl -n machdep.cpu.brand_string | grep -o "Intel")
+
+        if [[ -n "$processor" ]]; then
+        /usr/sbin/installer -pkg "$Intel_package" -target "$3"
+          
+        else
+        /usr/sbin/installer -pkg "$Apple_Silicon_package" -target "$3"
+        fi
+          
+        exit 0
+
+  - Processor: PkgCreator
+    Arguments:
+      force_pkg_build: "true"
+      pkg_request: 
+        pkgdir: "%RECIPE_CACHE_DIR%"
+        scripts: "%RECIPE_CACHE_DIR%/Universal/Scripts"
+        version: "%version%"
+        id: com.github.GitHub
+        options: purge_ds_store
+        pkgname: "%PKG_NAME_PREFIX%-%NAME%-UNIVERSAL-%version%"
+
+  - Processor: PathDeleter 
+    Arguments: 
+      path_list:
+        - "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_INTEL%"
+        - "%RECIPE_CACHE_DIR%/%NAME%-%BUILD_ARM64%"
+        - "%RECIPE_CACHE_DIR%/Universal"
