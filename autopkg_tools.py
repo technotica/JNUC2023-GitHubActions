@@ -139,6 +139,8 @@ class Recipe(object):
                     "-v",
                     "--post",
                     "io.github.hjuutilainen.VirusTotalAnalyzer/VirusTotalAnalyzer",
+                    "--post",
+                    "com.github.grahampugh.jamf-upload.processors/JamfPackageCleaner --key pkg_name_match=isu-%NAME%-",
                     "--report-plist",
                     report,
                 ]
