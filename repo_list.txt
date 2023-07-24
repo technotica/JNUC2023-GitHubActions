@@ -1,0 +1,4 @@
+https://github.com/hjuutilainen/autopkg-virustotalanalyzer
+https://github.com/autopkg/homebysix-recipes
+https://github.com/autopkg/grahampugh-recipes
+ssh://git@github.com/someorganization/reponame-recipes

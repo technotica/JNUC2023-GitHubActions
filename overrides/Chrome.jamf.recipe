@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Identifier</key>
+	<string>local.jamf.Chrome</string>
+	<key>Input</key>
+	<dict>
+		<key>CATEGORY</key>
+		<string>Internet</string>
+		<key>DOCK_ITEM_ACTION</key>
+		<string>Add to End</string>
+		<key>DOCK_ITEM_NAME</key>
+		<string>%NAME%</string>
+		<key>DOCK_ITEM_PATH</key>
+		<string>file:///Applications/Google%20Chrome.app/</string>
+		<key>DOCK_ITEM_REPLACE</key>
+		<string>true</string>
+		<key>DOCK_ITEM_TYPE</key>
+		<string>App</string>
+		<key>NAME</key>
+		<string>Google Chrome</string>
+		<key>PACKAGE_NOTES</key>
+		<string>Generated and added via AutoPkg Jamf Uploader process</string>
+		<key>PACKAGE_OS_REQUIREMENTS</key>
+		<string>13.x,12.x,11.x,10.15.x</string>
+		<key>PACKAGE_REPLACE</key>
+		<string>False</string>
+		<key>PKG_NAME_PREFIX</key>
+		<string>isu</string>
+		<key>POLICY_CATEGORY</key>
+		<string>Global</string>
+		<key>POLICY_CUSTOM_TRIGGER_NAME</key>
+		<string>%SHORT_NAME%</string>
+		<key>POLICY_FREQUENCY</key>
+		<string>Ongoing</string>
+		<key>POLICY_NAME</key>
+		<string>[Full JSS] %NAME% Custom Trigger</string>
+		<key>POLICY_REPLACE</key>
+		<string>true</string>
+		<key>POLICY_TEMPLATE</key>
+		<string>Policy_CustomTrigger_Global_NoDock.xml</string>
+		<key>SELF_SERVICE_BUTTON_REINSTALL</key>
+		<string>Reinstall</string>
+		<key>SELF_SERVICE_BUTTON_UNINSTALL</key>
+		<string>Install</string>
+		<key>SELF_SERVICE_DESCRIPTION</key>
+		<string>Download Size: %SELF_SERVICE_PACKAGE_SIZE%
+Version: %version%
+
+This Self Service policy is provided by YOURNAME
+
+The latest version of **%NAME%** will be installed. An icon will be placed in your Dock. %NAME% will automatically update itself using the vendor's built-in mechanism.
+
+If you have an older version already installed, please completely quit %NAME% by using **%NAME%&gt;Quit** or (**⌘-Q**) before proceeding.
+
+Please contact your **local IT group** with any questions.
+ 
+</string>
+		<key>SELF_SERVICE_DISPLAY_NAME</key>
+		<string>%NAME% %version%</string>
+		<key>SELF_SERVICE_FEATURE_MAIN_PAGE</key>
+		<string>false</string>
+		<key>SELF_SERVICE_GROUP_EXCLUSION_1</key>
+		<string>[Full JSS] Global Self Service Exclusions - All</string>
+		<key>SELF_SERVICE_GROUP_EXCLUSION_2</key>
+		<string>[Full JSS] Macs with OS X 10.12.x or older</string>
+		<key>SELF_SERVICE_GROUP_EXCLUSION_3</key>
+		<string>%SELF_SERVICE_GROUP_EXCLUSION_1%</string>
+		<key>SELF_SERVICE_GROUP_EXCLUSION_4</key>
+		<string>%SELF_SERVICE_GROUP_EXCLUSION_1%</string>
+		<key>SELF_SERVICE_GROUP_EXCLUSION_5</key>
+		<string>%SELF_SERVICE_GROUP_EXCLUSION_1%</string>
+		<key>SELF_SERVICE_ICON</key>
+		<string>%NAME%.png</string>
+		<key>SELF_SERVICE_PACKAGE_SIZE</key>
+		<string>172 MB</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY</key>
+		<string>Global</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY_1</key>
+		<string>%CATEGORY%</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY_2</key>
+		<string>%CATEGORY%</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY_3</key>
+		<string>%CATEGORY%</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY_4</key>
+		<string>%CATEGORY%</string>
+		<key>SELF_SERVICE_POLICY_CATEGORY_FEATURE_1</key>
+		<string>false</string>
+		<key>SELF_SERVICE_POLICY_FREQUENCY</key>
+		<string>Ongoing</string>
+		<key>SELF_SERVICE_POLICY_NAME</key>
+		<string>[Full JSS] %NAME%</string>
+		<key>SELF_SERVICE_POLICY_RECON</key>
+		<string>false</string>
+		<key>SELF_SERVICE_POLICY_REPLACE</key>
+		<string>true</string>
+		<key>SELF_SERVICE_POLICY_SCRIPT_1</key>
+		<string></string>
+		<key>SELF_SERVICE_POLICY_SCRIPT_2</key>
+		<string></string>
+		<key>SELF_SERVICE_POLICY_SCRIPT_PRIORITY_1</key>
+		<string></string>
+		<key>SELF_SERVICE_POLICY_SCRIPT_PRIORITY_2</key>
+		<string></string>
+		<key>SELF_SERVICE_POLICY_TEMPLATE</key>
+		<string>Policy_SelfService_Global.xml</string>
+		<key>SELF_SERVICE_USER_INTERACTION_FINISH</key>
+		<string>%NAME% installation policy completed.</string>
+		<key>SELF_SERVICE_USER_INTERACTION_START</key>
+		<string>Starting %NAME% installation policy.</string>
+		<key>SHORT_NAME</key>
+		<string>GoogleChrome</string>
+		<key>UPDATE_PREDICATE</key>
+		<string>pkg_uploaded != True</string>
+	</dict>
+	<key>ParentRecipe</key>
+	<string>com.github.someorganization.jamf.Chrome</string>
+	<key>ParentRecipeTrustInfo</key>
+	<dict>
+		<key>non_core_processors</key>
+		<dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfCategoryUploader</key>
+			<dict>
+				<key>git_hash</key>
+				<string>d1834bfeeba8ff3a9cef947cbbabcf201e65d29b</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfCategoryUploader.py</string>
+				<key>sha256_hash</key>
+				<string>aee1da382397eef4afe2e9099035ad6420063c628c6711d8b1f0dc08ec5fcf2c</string>
+			</dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfDockItemUploader</key>
+			<dict>
+				<key>git_hash</key>
+				<string>d1834bfeeba8ff3a9cef947cbbabcf201e65d29b</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfDockItemUploader.py</string>
+				<key>sha256_hash</key>
+				<string>fa9a27c98bbdd47804c07b5efeaf830f67bb2d56aac6cee4685dcf806163930d</string>
+			</dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfPackageUploader</key>
+			<dict>
+				<key>git_hash</key>
+				<string>ab243ec4077657cd097db3525df42ed7b41022dd</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfPackageUploader.py</string>
+				<key>sha256_hash</key>
+				<string>afa74047c22a5c01a1eb1e115512c019d1921db095ebe2ffe20e632674354543</string>
+			</dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfPolicyUploader</key>
+			<dict>
+				<key>git_hash</key>
+				<string>e36fad29574c24f2e7b129240f58fb56333733e6</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfPolicyUploader.py</string>
+				<key>sha256_hash</key>
+				<string>85ce9708ce3e12786d350cb5f2c7ac15ca70ac419aca2c1db51b36665f085d78</string>
+			</dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfUploaderSlacker</key>
+			<dict>
+				<key>git_hash</key>
+				<string>e29fcdbf2d7229b624c5bba9d067d4c34f3f0e9e</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfUploaderSlacker.py</string>
+				<key>sha256_hash</key>
+				<string>a19122f0a57d8b8ecea51cc99eb458436ddf66ff2cf0acfb0191b8c399326d51</string>
+			</dict>
+			<key>com.github.grahampugh.jamf-upload.processors/JamfUploaderTeamsNotifier</key>
+			<dict>
+				<key>git_hash</key>
+				<string>e29fcdbf2d7229b624c5bba9d067d4c34f3f0e9e</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.autopkg.grahampugh-recipes/JamfUploaderProcessors/JamfUploaderTeamsNotifier.py</string>
+				<key>sha256_hash</key>
+				<string>8bf8cc650ff955f4dd6008d594ce3dbacb8c7f010481c5a2404bf90d3c03a553</string>
+			</dict>
+		</dict>
+		<key>parent_recipes</key>
+		<dict>
+			<key>com.github.someorganization.download.Chrome</key>
+			<dict>
+				<key>git_hash</key>
+				<string>fd054bbf4c43c031d31a48f81e7f74a776bed8a1</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.someorganization.Jamf-autopkg/Google Chrome/Chrome.download.recipe.yaml</string>
+				<key>sha256_hash</key>
+				<string>c15a8346adecc9f133cbe457053ebca6aba0275acbd41d87e84fba3b8a3afe29</string>
+			</dict>
+			<key>com.github.someorganization.jamf.Chrome</key>
+			<dict>
+				<key>git_hash</key>
+				<string>97606892293e9cebc730325c428c55049be7c174</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.someorganization.Jamf-autopkg/Google Chrome/Chrome.jamf.recipe.yaml</string>
+				<key>sha256_hash</key>
+				<string>5e28a5d2f8c9966b7ae147bd0d93a42bcc2f777b1479e1694d06fe920e7352b9</string>
+			</dict>
+			<key>com.github.someorganization.pkg.Chrome</key>
+			<dict>
+				<key>git_hash</key>
+				<string>c2200a8eb8e222d8b3fcac14c48af3a05a532961</string>
+				<key>path</key>
+				<string>~/Library/AutoPkg/RecipeRepos/com.github.someorganization.Jamf-autopkg/Google Chrome/Chrome.pkg.recipe.yaml</string>
+				<key>sha256_hash</key>
+				<string>658eb184e24b321a16c60b417bfd07319e2ce90d94bd82905b13a264efbc2bc3</string>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>
