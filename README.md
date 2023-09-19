@@ -19,5 +19,4 @@ JNUC 2023 Software and Configuration Deployment for Distributed IT Teams
 
 # Workflow in Flow Diagrams
 ![Overview](/images/AutoPkg-GitHubActions.png)
-
-![AutoPkg GitHub Actions](/Visualizations/AutoPkg-GitHubActions-CompleteWorkflow.png)
+![AutoPkg GitHub Actions](/images/AutoPkg-GitHubActions-CompleteWorkflow.png)
