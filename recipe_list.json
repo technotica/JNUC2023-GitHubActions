@@ -1,12 +1,4 @@
 [
 	"Chrome.jamf.recipe",
-	"Firefox.jamf.recipe",
-	"FirefoxESR.jamf.recipe",
-	"GitHubDesktop.jamf.recipe",
-	"MicrosoftTeams.jamf.recipe",
-	"Python3.jamf.recipe",
-	"R.jamf.recipe",
-	"RStudio.jamf.recipe",
-	"VisualStudioCode.jamf.recipe",
-	"Zoom.jamf.recipe"
+	"GitHubDesktop.jamf.recipe"
 ]
